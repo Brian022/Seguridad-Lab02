@@ -446,23 +446,36 @@ alfabetoLetras191 = {
 }
 
 
-def generar(palabra,clave):
-    if(len(palabra)>len(clave)):
-        clave=list(clave)
-        for i in range(0,len(palabra)-len(clave)):
-            clave.append(clave[i])
-    return("" . join(clave))
+def generar(palabra,clave,tipo):
+    if(tipo=="vignere"):
+        if(len(palabra)>len(clave)):
+            clave=list(clave)
+            for i in range(0,len(palabra)-len(clave)):
+                clave.append(clave[i])
+        return("" . join(clave))
+    elif(tipo=="autoclave"):
+        if(len(palabra)>len(clave)):
+            clave=list(clave)
+            for i in range(0,len(palabra)-len(clave)):
+                clave.append(palabra[i])
+        return("" . join(clave))
 
 
-def cifrar27(palabra,clave):
+def cifrar(palabra,clave,modulo):
     x=[]
-    for i in range(0,len(palabra)):
-        y = (alfabetoLetras27.get(palabra[i]) + alfabetoLetras27.get(clave[i]))
-        print(y)
-        if(y>26):
-            y=y-27
-        x.append(y)
-    return x
+    if(modulo==27):
+        for i in range(0,len(palabra)):
+            y = (alfabetoLetras27.get(palabra[i]) + alfabetoLetras27.get(clave[i]))
+            if(y>26):
+                y=y-27
+            x.append(alfabetoNumero27.get(y))
+        return x
+    elif(modulo==191):
+        for i in range(0,len(palabra)):
+            y = (alfabetoLetras191.get(palabra[i]) + alfabetoLetras191.get(clave[i]))%191
+            
+            x.append(alfabetoNumero191.get(y))
+        return x
 
 def cifrar191(palabra,clave):
     x=[]
@@ -481,32 +494,111 @@ def descifrar27(palabra,clave):
             y=y+27
         x.append(y)
     return x
+'preprocesado'
+
+def normalize(s):
+    replacements = (
+        ("á", "a"),
+        ("é", "e"),
+        ("í", "i"),
+        ("ó", "o"),
+        ("ú", "u"),
+    )
+    for a, b in replacements:
+        s = s.replace(a, b).replace(a.upper(), b.upper())
+    return s
+
+'Simbolos'
+punto='.'
+coma=','
+puntoYcoma=';'
+exclaA='¡'
+exclaB='!'
+
+def preprocesar(palabra):
+    aux=[]
+    st = ""
+    for v in palabra:
+        a=normalize(v)
+        if a == ' ':
+            aux.append('')
+        elif a == punto or a == puntoYcoma or a == coma or a == exclaA or a == exclaB:
+            aux.append('')
+        else:
+            aux.append(a.upper())
+        palabra = ' '.join([str(item) for item in aux])
+             
+    for x in aux:
+        st += x
+    return st
+
+def espaciopre(palabra):
+    aux=[]
+    st = ""
+    for v in palabra:
+        #a=normalize(v)
+        if v == ' ':
+            aux.append('')
+        else:
+            aux.append(v)
+        palabra = ' '.join([str(item) for item in aux])
+             
+    for x in aux:
+        st += x
+    return st
+
+print("**************************CIFRADO MOD 27-191*********************")
+print("Ingresar clave en 'vignere' o 'autoclave'")
+tipo = input()
+print("Ingresar modulo a usar 27 o 191")
+modulo = int(input())
+
+print("Ingresa el texto en claro")
+palabra0 = input()
+print("Ingresa la clave")
+clave0 = input()
+
+#palabra_inicial ="Creer que es posible es el paso número uno hacia el éxito. Despertarse y pensar en algo positivo puede cambiar el transcurso de todo el día. No eres lo suficientemente viejo como para no iniciar un nuevo camino hacia tus sueños. Levántate cada mañana creyendo que vas a vivir el mejor día de tu vida"
+palabra =""
+
+if(modulo==27):    
+    palabra= preprocesar(palabra0)
+elif(modulo==191):
+    palabra= espaciopre(palabra0)
+
+ 
+clave = preprocesar(clave0)
+#clave="CIELO"
+#palabra = "AUTOCLAVE"
+#clave = "LUNA"
 
 
-palabra ="HERMOSO"
-clave="CIELO"
-key=generar(palabra,clave)
+key=generar(palabra,clave,tipo)
 
-t_cifrado=cifrar191(palabra, key)
-print(t_cifrado)
-#print(palabra)
-#print(key)
-cifrar_texto=cifrar27(palabra,key)
-print(cifrar_texto)
-aux_cifrar=[]
-for i in cifrar_texto:
-    aux_cifrar.append(alfabetoNumero27.get(i))
-print("texto cifrado " ,aux_cifrar)
+t_cifrado=cifrar(palabra, key, modulo)
 
+#print(t_cifrado)
+st = ""
+for x in t_cifrado:
+    st += x
+print(st)
 
-descifrar_texto=descifrar27(aux_cifrar,key)
-
-aux_descifrar=[]
-
-for i in range(0,len(descifrar_texto)):
-    aux_descifrar.append(alfabetoNumero27.get(descifrar_texto[i]))
-print("texto descifrado " ,aux_descifrar)
-
-
-
-
+#cifrar_texto=cifrar27(palabra,key)
+#print(cifrar_texto)
+# =============================================================================
+# 
+# 
+# aux_cifrar=[]
+# for i in cifrar_texto:
+#     aux_cifrar.append(alfabetoNumero27.get(i))
+# print("texto cifrado " ,aux_cifrar)
+# 
+# 
+# descifrar_texto=descifrar27(aux_cifrar,key)
+# 
+# aux_descifrar=[]
+# 
+# for i in range(0,len(descifrar_texto)):
+#     aux_descifrar.append(alfabetoNumero27.get(descifrar_texto[i]))
+# print("texto descifrado " ,aux_descifrar)
+# =============================================================================
