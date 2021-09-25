@@ -481,18 +481,57 @@ def descifrar27(palabra,clave):
             y=y+27
         x.append(y)
     return x
+'preprocesado'
 
+def normalize(s):
+    replacements = (
+        ("á", "a"),
+        ("é", "e"),
+        ("í", "i"),
+        ("ó", "o"),
+        ("ú", "u"),
+    )
+    for a, b in replacements:
+        s = s.replace(a, b).replace(a.upper(), b.upper())
+    return s
 
-palabra ="HERMOSO"
+'Simbolos'
+punto='.'
+coma=','
+puntoYcoma=';'
+exclaA='¡'
+exclaB='!'
+
+def pre(palabra):
+    aux=[]
+    st = ""
+    for v in palabra:
+        a=normalize(v)
+        if a == ' ':
+            aux.append('')
+        elif a == punto or a == puntoYcoma or a == coma or a == exclaA or a == exclaB:
+            aux.append('')
+        else:
+            aux.append(a.upper())
+        palabra = ' '.join([str(item) for item in aux])
+             
+    for x in aux:
+        st += x
+    return st
+    
+palabra_inicial ="Creer que es posible es el paso número uno hacia el éxito. Despertarse y pensar en algo positivo puede cambiar el transcurso de todo el día. No eres lo suficientemente viejo como para no iniciar un nuevo camino hacia tus sueños. Levántate cada mañana creyendo que vas a vivir el mejor día de tu vida"
+palabra=pre(palabra_inicial)  
+
 clave="CIELO"
+
 key=generar(palabra,clave)
 
 t_cifrado=cifrar191(palabra, key)
 print(t_cifrado)
-#print(palabra)
-#print(key)
 cifrar_texto=cifrar27(palabra,key)
 print(cifrar_texto)
+
+
 aux_cifrar=[]
 for i in cifrar_texto:
     aux_cifrar.append(alfabetoNumero27.get(i))
@@ -506,7 +545,3 @@ aux_descifrar=[]
 for i in range(0,len(descifrar_texto)):
     aux_descifrar.append(alfabetoNumero27.get(descifrar_texto[i]))
 print("texto descifrado " ,aux_descifrar)
-
-
-
-
